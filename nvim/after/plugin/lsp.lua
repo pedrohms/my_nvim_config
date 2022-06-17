@@ -2,8 +2,8 @@ local Remap = require("user.keymap")
 local nnoremap = Remap.nnoremap
 local inoremap = Remap.inoremap
 
-local sumneko_root_path = vim.fn.stdpath "data"
-local sumneko_binary = sumneko_root_path .. "/custom/sumneko"
+local sumneko_root_path = vim.fn.stdpath "data" .. "/custom/sumneko"
+local sumneko_binary = sumneko_root_path .. "/bin/lua-language-server.exe"
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities.textDocument.completion.completionItem.snippetSupport = true
