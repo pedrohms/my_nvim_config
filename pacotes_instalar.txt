@@ -1,0 +1,2 @@
+npm install -g @volar/vue-language-server
+npm install -g typescript typescript-language-server
