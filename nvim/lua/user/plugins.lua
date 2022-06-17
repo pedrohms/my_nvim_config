@@ -1,19 +1,6 @@
 local fn = vim.fn
 
 local install_path = fn.stdpath "data" .. "/site/pack/packer/start/packer.nvim"
-local sumneko_path = fn.stdpath "data" .. "/custom/sumneko"
-
-if fn.empty( fn.glob(sumneko_path)) > 0 then
-  SUMNEKO_PATH = fn.system {
-    "git",
-    "clone",
-    "--depth",
-    "1",
-    "https://github.com/sumneko/lua-language-server",
-    sumneko_path
-  }
-  print "Installing sumneko Binary files"
-end
 
 if fn.empty( fn.glob(install_path)) > 0 then
   PACKER_BOOTSTRAP = fn.system {
