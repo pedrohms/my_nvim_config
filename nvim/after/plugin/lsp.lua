@@ -18,6 +18,8 @@ if not lspconfig_status_ok then
   return
 end
 
+require("user.lsp.null-ls")
+
 local servers = {
   "cssls",
   "emmet_ls",
@@ -139,6 +141,12 @@ local function config(_config)
       inoremap("<C-K>", function() vim.lsp.buf.hover() end)
       nnoremap("<leader>lds", "<cmd>Telescope lsp_document_symbols<cr>")
       nnoremap("<leader>lf", function() vim.lsp.buf.format { async = true } end)
+      capabilities.textDocument.completion.completionItem.snippetSupport = true
+      local status_cmp_ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+      if not status_cmp_ok then
+        return
+      end
+      capabilities = cmp_nvim_lsp.update_capabilities(capabilities)
     end,
   }, _config or {})
 end
