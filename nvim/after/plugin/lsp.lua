@@ -3,11 +3,58 @@ local nnoremap = Remap.nnoremap
 local inoremap = Remap.inoremap
 
 local sumneko_root_path = vim.fn.stdpath "data" .. "/custom/sumneko"
-local sumneko_binary = sumneko_root_path .. "/bin/lua-language-server.exe"
+local sumneko_binary = sumneko_root_path .. "/bin/lua-language-server"
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities.textDocument.completion.completionItem.snippetSupport = true
 
+local status_ok, lsp_installer = pcall(require, "nvim-lsp-installer")
+if not status_ok then
+  return
+end
+
+local lspconfig_status_ok, lspconfig = pcall(require, "lspconfig")
+if not lspconfig_status_ok then
+  return
+end
+
+local servers = {
+  "cssls",
+  "emmet_ls",
+  "html",
+  "jdtls",
+  "jsonls",
+  "solc",
+  "sumneko_lua",
+  "tflint",
+  "tsserver",
+  "pyright",
+  "yamlls",
+  "bashls",
+  "clangd",
+  "gopls",
+  "volar",
+  "svelte",
+}
+
+local settings = {
+  ensure_installed = servers,
+  ui = {
+    keymaps = {
+      toggle_server_expand = "<CR>",
+      install_server = "i",
+      update_server = "u",
+      check_server_version = "c",
+      update_all_servers = "U",
+      check_outdated_servers = "C",
+      uninstall_server = "X",
+    },
+  },
+
+  log_level = vim.log.levels.INFO,
+}
+
+lsp_installer.setup(settings)
 
 -- Setup nvim-cmp.
 local cmp = require("cmp")
@@ -80,105 +127,81 @@ local function config(_config)
 		on_attach = function()
 			nnoremap("gd", function() vim.lsp.buf.definition() end)
 			nnoremap("K", function() vim.lsp.buf.hover() end)
-			nnoremap("<leader>vws", function() vim.lsp.buf.workspace_symbol() end)
-			nnoremap("<leader>vd", function() vim.diagnostic.open_float() end)
+			nnoremap("<leader>lws", function() vim.lsp.buf.workspace_symbol() end)
+			nnoremap("<leader>ld", function() vim.diagnostic.open_float() end)
 			nnoremap("[d", function() vim.lsp.diagnostic.goto_next() end)
 			nnoremap("]d", function() vim.lsp.diagnostic.goto_prev() end)
-			nnoremap("<leader>vca", function() vim.lsp.buf.code_action() end)
-			nnoremap("<leader>vrr", function() vim.lsp.buf.references() end)
+			nnoremap("<leader>lca", function() vim.lsp.buf.code_action() end)
+			nnoremap("<leader>lrr", function() vim.lsp.buf.references() end)
 			nnoremap("<leader>vrn", function() vim.lsp.buf.rename() end)
 			inoremap("<C-h>", function() vim.lsp.buf.signature_help() end)
+			inoremap("<C-K>", function() vim.lsp.buf.hover() end)
+            nnoremap("<leader>lds", "<cmd>Telescope lsp_document_symbols<cr>")
+            nnoremap("<leader>lf", function () vim.lsp.buf.format { async = true } end)
 		end,
 	}, _config or {})
 end
 
-require("lspconfig").tsserver.setup(config())
+for _, server in pairs(servers) do
+    local opts = config()
+    if server == "jdtls" then
+        local root_dir_pattern = require("lspconfig.util").root_pattern(".git", "pom.xml")
+        local jdtlsOps = {
+            cmd = { "jdtls" },
+            root_dir = root_dir_pattern,
+        }
+        opts = vim.tbl_deep_extend("force", jdtlsOps, opts)
+    end
+    if server == "volar" then
+        local volarOpts = {
+          filetypes = {'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue', 'json'}
+        }
+        opts = vim.tbl_deep_extend("force", volarOpts, opts)
+    end
+    if server == "gopls" then
+        local goplsOpts = {
+            cmd = { "gopls", "serve" },
+            settings = {
+                gopls = {
+                    analyses = {
+                        unusedparams = true,
+                    },
+                    staticcheck = true,
+                },
+            },
+        }
+        opts = vim.tbl_deep_extend("force", goplsOpts, opts)
+    end
+    if server == "sumneko" then
+        local sumnekoOpts = {
+            cmd = { sumneko_binary, "-E", sumneko_root_path .. "/main.lua" },
+            settings = {
+                Lua = {
+                    runtime = {
+                        -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
+                        version = "LuaJIT",
+                        -- Setup your lua path
+                        path = vim.split(package.path, ";"),
+                    },
+                    diagnostics = {
+                        -- Get the language server to recognize the `vim` global
+                        globals = { "vim" },
+                    },
+                    workspace = {
+                        -- Make the server aware of Neovim runtime files
+                        library = {
+                            [vim.fn.expand("$VIMRUNTIME/lua")] = true,
+                            [vim.fn.expand("$VIMRUNTIME/lua/vim/lsp")] = true,
+                        },
+                    },
+                },
+            },
+        }
+        opts = vim.tbl_deep_extend("force", sumnekoOpts, opts)
+    end
 
---[[  I cannot seem to get this woring on new computer..
-require("lspconfig").clangd.setup(config({
-	cmd = { "clangd", "--background-index", "--log=verbose" },
-    root_dir = function()
-        print("clangd-Rootdir", vim.loop.cwd())
-		return vim.loop.cwd()
-	end,
-}))
---]]
-require("lspconfig").ccls.setup(config())
-
-require("lspconfig").jedi_language_server.setup(config())
-
-local root_dir_pattern = require("lspconfig.util").root_pattern(".git", "pom.xml")
-require("lspconfig").jdtls.setup(config({
-	cmd = { "jdtls" },
-	root_dir = root_dir_pattern,
-  on_attach = function(...)
-  	print "attached"
-    require'vim.lsp.log'.error('xxx on_attach: '..vim.inspect(...))
-  end,
-  on_exit = function(...)
-    require'vim.lsp.log'.error('xxx on_exit: '..vim.inspect(...))
-  end,
-}))
-
-require("lspconfig").svelte.setup(config())
-
-require("lspconfig").solang.setup(config())
-
-require("lspconfig").cssls.setup(config())
-
-require("lspconfig").volar.setup(config({
-  filetypes = {'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue', 'json'}
-}))
-require("lspconfig").gopls.setup(config({
-	cmd = { "gopls", "serve" },
-	settings = {
-		gopls = {
-			analyses = {
-				unusedparams = true,
-			},
-			staticcheck = true,
-		},
-	},
-}))
-
--- who even uses this?
-require("lspconfig").rust_analyzer.setup(config({
-	cmd = { "rustup", "run", "nightly", "rust-analyzer" },
-	--[[
-    settings = {
-        rust = {
-            unstable_features = true,
-            build_on_save = false,
-            all_features = true,
-        },
-    }
-    --]]
-}))
-
-require("lspconfig").sumneko_lua.setup(config({
-	cmd = { sumneko_binary, "-E", sumneko_root_path .. "/main.lua" },
-	settings = {
-		Lua = {
-			runtime = {
-				-- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
-				version = "LuaJIT",
-				-- Setup your lua path
-				path = vim.split(package.path, ";"),
-			},
-			diagnostics = {
-				-- Get the language server to recognize the `vim` global
-				globals = { "vim" },
-			},
-			workspace = {
-				-- Make the server aware of Neovim runtime files
-				library = {
-					[vim.fn.expand("$VIMRUNTIME/lua")] = true,
-					[vim.fn.expand("$VIMRUNTIME/lua/vim/lsp")] = true,
-				},
-			},
-		},
-	},
-}))
+    lspconfig[server].setup(opts)
+end
 
 local opts = {
 	-- whether to highlight the currently hovered symbol
