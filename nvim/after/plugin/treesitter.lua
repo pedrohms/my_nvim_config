@@ -9,7 +9,15 @@ if status_ok then
       additional_vim_regex_highlighting = true,
     },
     indent = {
-      enable = false
+      enable = false,
+      disable = { "python", "css" },
+    },
+    autopairs = {
+      enable = true,
+    },
+    autotag = {
+      enable = true,
+      disable = { "xml" },
     }
   }
 end

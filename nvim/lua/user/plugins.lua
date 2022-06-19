@@ -96,4 +96,8 @@ return packer.startup(function(use)
   use "tamago324/nlsp-settings.nvim" -- language server settings defined in json for
   use "jose-elias-alvarez/null-ls.nvim" -- for formatters and linters
   use "lukas-reineke/indent-blankline.nvim"
+  use "Mephistophiles/surround.nvim"
+  use "windwp/nvim-ts-autotag"
+  use "windwp/nvim-autopairs"
+  use "tpope/vim-surround"
 end)
