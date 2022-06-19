@@ -24,9 +24,11 @@ keymap.nnoremap("<leader>b",
             .get_dropdown { previewer = false })
     end)
 
+-- Telescope
 keymap.nnoremap("<leader>ff", function() require('telescope.builtin').find_files() end)
 keymap.nnoremap("<leader>sk", "<cmd>Telescope keymaps<CR>")
 keymap.nnoremap("<leader>sc", "<cmd>Telescope commands<CR>")
+keymap.nnoremap("<leader>fg", "<cmd>Telescope live_grep<CR>")
 
 keymap.nnoremap("<leader>e", ":NvimTreeToggle<CR>")
 

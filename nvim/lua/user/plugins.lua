@@ -91,4 +91,5 @@ return packer.startup(function(use)
     use { "ray-x/lsp_signature.nvim",
         commit = "4852d99f9511d090745d3cc1f09a75772b9e07e9"
     }
+    use "akinsho/toggleterm.nvim"
 end)

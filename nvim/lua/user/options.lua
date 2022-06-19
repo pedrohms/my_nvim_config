@@ -1,21 +1,21 @@
 local options = {
-  shell = "pwsh.exe",
+  -- shell = "pwsh.exe",
   number = true,
   background = "dark",
   relativenumber = true,
   hlsearch = false,
   hidden = true,
   errorbells = false,
-  tabstop = 4 ,
-  softtabstop = 4 ,
-  shiftwidth = 4,
+  tabstop = 2,
+  softtabstop = 2,
+  shiftwidth = 2,
   expandtab = true,
   smartindent = true,
   nu = true,
   wrap = false,
   swapfile = false,
   backup = false,
---  undodir = ( os.getenv("XDG_DATA_HOME") .. "/.vim/undodir") or nil,
+  undodir = (vim.fn.stdpath "data" .. "/undodir") or nil,
   undofile = true,
   incsearch = true,
   termguicolors = true,
@@ -27,7 +27,7 @@ local options = {
 }
 vim.opt.isfname:append("@-@")
 vim.opt.shortmess:append("c")
-for k, v in pairs(options) do 
+for k, v in pairs(options) do
   vim.opt[k] = v
 end
 
