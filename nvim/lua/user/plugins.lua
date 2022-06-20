@@ -46,7 +46,6 @@ return packer.startup(function(use)
     "williamboman/nvim-lsp-installer",
     "neovim/nvim-lspconfig",
   }
-  use "github/copilot.vim"
   use 'hrsh7th/cmp-nvim-lsp'
   use 'hrsh7th/cmp-buffer'
   use 'hrsh7th/nvim-cmp'
@@ -100,4 +99,5 @@ return packer.startup(function(use)
   use "windwp/nvim-ts-autotag"
   use "windwp/nvim-autopairs"
   use "tpope/vim-surround"
+  use "mfussenegger/nvim-jdtls"
 end)

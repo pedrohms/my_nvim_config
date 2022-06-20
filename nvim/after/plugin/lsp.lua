@@ -3,10 +3,12 @@ local nnoremap = Remap.nnoremap
 local inoremap = Remap.inoremap
 
 local sumneko_root_path = vim.fn.stdpath "data" .. "/custom/sumneko"
-local sumneko_binary = sumneko_root_path .. "/bin/lua-language-server"
+local sumneko_binary = sumneko_root_path .. "/bin/lua-language-server.exe"
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities.textDocument.completion.completionItem.snippetSupport = true
+
+
 
 local status_ok, lsp_installer = pcall(require, "nvim-lsp-installer")
 if not status_ok then
@@ -18,11 +20,12 @@ if not lspconfig_status_ok then
   return
 end
 
-require("user.lsp.null-ls")
+
+
 
 local servers = {
+  "eslint",
   "cssls",
-  "emmet_ls",
   "html",
   "jdtls",
   "jsonls",
@@ -36,6 +39,7 @@ local servers = {
   "clangd",
   "gopls",
   "volar",
+  "vuels",
   "svelte",
   "tailwindcss",
 }
@@ -140,7 +144,7 @@ local function config(_config)
       inoremap("<C-h>", function() vim.lsp.buf.signature_help() end)
       inoremap("<C-K>", function() vim.lsp.buf.hover() end)
       nnoremap("<leader>lds", "<cmd>Telescope lsp_document_symbols<cr>")
-      nnoremap("<leader>lf", function() vim.lsp.buf.format { async = true } end)
+      nnoremap("<leader>lf", function() vim.lsp.buf.formatting() end)
       capabilities.textDocument.completion.completionItem.snippetSupport = true
       local status_cmp_ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
       if not status_cmp_ok then
@@ -153,18 +157,16 @@ end
 
 for _, server in pairs(servers) do
   local opts = config()
-  if server == "jdtls" then
-    local root_dir_pattern = require("lspconfig.util").root_pattern(".git", "pom.xml")
-    local jdtlsOps = {
-      cmd = { "jdtls" },
-      root_dir = root_dir_pattern,
-    }
-    opts = vim.tbl_deep_extend("force", jdtlsOps, opts)
-  end
+  -- if server == "jdtls" then
+  --   local jdtlsOps = require("user.lsp.settings.java")
+
+  --   opts = vim.tbl_deep_extend("force", jdtlsOps, opts)
+  -- end
   if server == "tsserver" then
     local tsserverOpts = {
       filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'json' }
     }
+    opts = vim.tbl_deep_extend("force", tsserverOpts, opts)
   end
   if server == "volar" then
     local volarOpts = {
@@ -217,8 +219,9 @@ for _, server in pairs(servers) do
     }
     opts = vim.tbl_deep_extend("force", sumnekoOpts, opts)
   end
-
-  lspconfig[server].setup(opts)
+  if server ~= "jdtls" then
+    lspconfig[server].setup(opts)
+  end
 end
 
 local opts = {
@@ -254,3 +257,7 @@ require("luasnip.loaders.from_vscode").lazy_load({
   include = nil, -- Load all languages
   exclude = {},
 })
+
+
+require("user.lsp.null-ls")
+print "teste"

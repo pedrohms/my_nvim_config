@@ -12,17 +12,19 @@ keymap.nnoremap("<A-j>", "<Esc>:m .+1<CR>==$")
 keymap.nnoremap("<A-k>", "<Esc>:m .-2<CR>==$")
 keymap.vnoremap("<A-j>", ":m .+1<CR>==")
 keymap.vnoremap("<A-k>", ":m .-2<CR>==")
+keymap.vnoremap("<", "<gv")
+keymap.vnoremap(">", ">gv")
 
 keymap.nnoremap("<S-l>", ":bnext<CR>")
 keymap.nnoremap("<S-h>", ":bprevious<CR>")
 keymap.nnoremap("<leader>c", ":bd<CR>")
 
 keymap.nnoremap("<leader>b",
-    function()
-        require('telescope.builtin')
-            .buffers(require('telescope.themes')
-            .get_dropdown { previewer = false })
-    end)
+  function()
+    require('telescope.builtin')
+        .buffers(require('telescope.themes')
+          .get_dropdown { previewer = false })
+  end)
 
 -- Telescope
 keymap.nnoremap("<leader>ff", function() require('telescope.builtin').find_files() end)
