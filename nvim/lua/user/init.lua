@@ -1,5 +1,4 @@
 require "user.plugins"
 require "user.winbar"
 require "user.options"
-require "user.lsp.settings.java"
 require "user.autocommands"

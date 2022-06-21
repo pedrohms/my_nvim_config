@@ -17,7 +17,7 @@ keymap.vnoremap(">", ">gv")
 
 keymap.nnoremap("<S-l>", ":bnext<CR>")
 keymap.nnoremap("<S-h>", ":bprevious<CR>")
-keymap.nnoremap("<leader>c", ":bd<CR>")
+keymap.nnoremap("<leader>c", "<cmd>Bdelete!<CR>")
 
 keymap.nnoremap("<leader>b",
   function()

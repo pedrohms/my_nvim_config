@@ -24,6 +24,8 @@ end
 
 
 local servers = {
+  "dartls",
+  "emmet_ls",
   "eslint",
   "cssls",
   "html",
@@ -43,6 +45,11 @@ local servers = {
   "svelte",
   "tailwindcss",
 }
+
+-- if string.find(os.getenv("OS"), "unix") then
+--   print "nao e windwos"
+--   vim.tbl_deep_extend("force", servers, { "emmet_ls" })
+-- end
 
 local settings = {
   ensure_installed = servers,
@@ -88,7 +95,7 @@ cmp.setup({
     end,
   },
   mapping = cmp.mapping.preset.insert({
-    ['<C-y>'] = cmp.mapping.confirm({ select = true }),
+    ["<C-y>"] = cmp.mapping.confirm({ select = true }),
     ["<C-u>"] = cmp.mapping.scroll_docs(-4),
     ["<C-d>"] = cmp.mapping.scroll_docs(4),
     ["<C-Space>"] = cmp.mapping.complete(),
@@ -116,22 +123,25 @@ cmp.setup({
     { name = "nvim_lsp" },
 
     -- For vsnip user.
-    -- { name = 'vsnip' },
+    -- { name = "vsnip" },
 
     -- For luasnip user.
     { name = "luasnip" },
 
     -- For ultisnips user.
-    -- { name = 'ultisnips' },
+    -- { name = "ultisnips" },
 
     { name = "buffer" },
   },
 })
 
-local function config(_config)
+local function config(_config, client)
   return vim.tbl_deep_extend("force", {
     capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities()),
     on_attach = function()
+      if client == "jdtls" then
+        nnoremap("<leader>lpc", function() require("jdtls").update_project_config() end)
+      end
       nnoremap("gd", function() vim.lsp.buf.definition() end)
       nnoremap("K", function() vim.lsp.buf.hover() end)
       nnoremap("<leader>lws", function() vim.lsp.buf.workspace_symbol() end)
@@ -139,8 +149,8 @@ local function config(_config)
       nnoremap("[d", function() vim.lsp.diagnostic.goto_next() end)
       nnoremap("]d", function() vim.lsp.diagnostic.goto_prev() end)
       nnoremap("<leader>lca", function() vim.lsp.buf.code_action() end)
-      nnoremap("<leader>lrr", function() vim.lsp.buf.references() end)
-      nnoremap("<leader>vrn", function() vim.lsp.buf.rename() end)
+      nnoremap("<leader>lrf", function() vim.lsp.buf.references() end)
+      nnoremap("<leader>lrn", function() vim.lsp.buf.rename() end)
       inoremap("<C-h>", function() vim.lsp.buf.signature_help() end)
       inoremap("<C-K>", function() vim.lsp.buf.hover() end)
       nnoremap("<leader>lds", "<cmd>Telescope lsp_document_symbols<cr>")
@@ -157,20 +167,26 @@ end
 
 for _, server in pairs(servers) do
   local opts = config()
-  -- if server == "jdtls" then
-  --   local jdtlsOps = require("user.lsp.settings.java")
-
-  --   opts = vim.tbl_deep_extend("force", jdtlsOps, opts)
-  -- end
+  if server == "jdtls" then
+    local jdtlsOpts = { cmd = { "jdtls" } } 
+    opts = config({}, "jdtls")
+    opts = vim.tbl_deep_extend("force", jdtlsOpts, opts)
+  end
+  if server == "cssls" then
+    local htmlOpts = {
+      filetypes = { "css", "html" }
+    }
+    opts = vim.tbl_deep_extend("force", htmlOpts, opts)
+  end
   if server == "tsserver" then
     local tsserverOpts = {
-      filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'json' }
+      filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "json" }
     }
     opts = vim.tbl_deep_extend("force", tsserverOpts, opts)
   end
   if server == "volar" then
     local volarOpts = {
-      filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue', 'json' }
+      filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue", "json" }
     }
     opts = vim.tbl_deep_extend("force", volarOpts, opts)
   end
@@ -189,7 +205,28 @@ for _, server in pairs(servers) do
     opts = vim.tbl_deep_extend("force", goplsOpts, opts)
   end
   if server == "emmet_ls" then
-    local emmet_ls_opts = require "user.lsp.settings.emmet_ls"
+    local emmet_ls_opts = {
+      filetypes = {
+        "html",
+        "css",
+        "scss",
+        "javascript",
+        "javascriptreact",
+        "typescript",
+        "typescriptreact",
+        "haml",
+        "xml",
+        "xsl",
+        "pug",
+        "slim",
+        "sass",
+        "stylus",
+        "less",
+        "sss",
+        "hbs",
+        "handlebars",
+      }
+    }
     opts = vim.tbl_deep_extend("force", emmet_ls_opts, opts)
   end
   if server == "sumneko" then
@@ -198,7 +235,7 @@ for _, server in pairs(servers) do
       settings = {
         Lua = {
           runtime = {
-            -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
+            -- Tell the language server which version of Lua you"re using (most likely LuaJIT in the case of Neovim)
             version = "LuaJIT",
             -- Setup your lua path
             path = vim.split(package.path, ";"),
@@ -219,9 +256,9 @@ for _, server in pairs(servers) do
     }
     opts = vim.tbl_deep_extend("force", sumnekoOpts, opts)
   end
-  if server ~= "jdtls" then
-    lspconfig[server].setup(opts)
-  end
+  -- if server ~= "jdtls" then
+  lspconfig[server].setup(opts)
+  -- end
 end
 
 local opts = {

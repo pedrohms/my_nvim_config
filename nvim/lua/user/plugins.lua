@@ -53,7 +53,6 @@ return packer.startup(function(use)
   use 'nvim-lua/lsp_extensions.nvim'
   use 'glepnir/lspsaga.nvim'
   use 'simrat39/symbols-outline.nvim'
-  use 'L3MON4D3/LuaSnip'
   use 'saadparwaiz1/cmp_luasnip'
 
   use "goolord/alpha-nvim"
@@ -100,4 +99,9 @@ return packer.startup(function(use)
   use "windwp/nvim-autopairs"
   use "tpope/vim-surround"
   use "mfussenegger/nvim-jdtls"
+  use "moll/vim-bbye"
+
+    -- snippets
+  use "rafamadriz/friendly-snippets" -- a bunch of snippets to use
+  use 'L3MON4D3/LuaSnip'
 end)

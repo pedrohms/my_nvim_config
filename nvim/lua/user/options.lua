@@ -1,5 +1,6 @@
 local options = {
   -- shell = "pwsh.exe",
+  clipboard = "unnamedplus",
   number = true,
   background = "dark",
   relativenumber = true,
@@ -23,7 +24,9 @@ local options = {
   signcolumn = "yes",
   cmdheight = 1,
   updatetime = 50,
-  colorcolumn = "80"
+  colorcolumn = "80",
+  cursorline = true,
+  fileencoding = "utf-8",
 }
 vim.opt.isfname:append("@-@")
 vim.opt.shortmess:append("c")
