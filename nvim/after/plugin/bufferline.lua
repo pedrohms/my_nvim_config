@@ -1,5 +1,5 @@
 local status_ok, bufferline = pcall(require, "bufferline")
-if status_ok then
+if status_ok and os.getenv('OS') == "Windows_NT" then
     vim.opt.termguicolors = true
     bufferline.setup {
         options = {

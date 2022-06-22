@@ -64,7 +64,7 @@ vim.api.nvim_create_autocmd({ "CmdWinEnter" }, {
   end,
 })
 
-if (vim.fn.has "mac" == 1) or (vim.fn.has "unix" == 1) then
+if os.getenv('OS') ~= "Windows_NT" then
   local status_winbar, winbar = pcall(require, "user.winbar")
   if status_winbar then
     vim.api.nvim_create_autocmd({ "CursorMoved", "BufWinEnter", "BufFilePost", "InsertEnter", "BufWritePost" }, {

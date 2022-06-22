@@ -4,10 +4,12 @@ local inoremap = Remap.inoremap
 
 local sumneko_root_path = vim.fn.stdpath "data" .. "/custom/sumneko"
 local sumneko_binary = sumneko_root_path .. "/bin/lua-language-server.exe"
+if os.getenv('OS') ~= "Windows_NT" then
+  sumneko_binary = sumneko_root_path .. "/bin/lua-language-server"
+end
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities.textDocument.completion.completionItem.snippetSupport = true
-
 
 
 local status_ok, lsp_installer = pcall(require, "nvim-lsp-installer")
@@ -117,29 +119,24 @@ cmp.setup({
   },
 
   sources = {
-    -- tabnine completion? yayaya
-
-
     { name = "nvim_lsp" },
-
-    -- For vsnip user.
-    -- { name = "vsnip" },
-
-    -- For luasnip user.
     { name = "luasnip" },
-
-    -- For ultisnips user.
-    -- { name = "ultisnips" },
-
     { name = "buffer" },
   },
 })
 
-local function config(_config, client)
+local function config(_config, clientDsc)
   return vim.tbl_deep_extend("force", {
     capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities()),
-    on_attach = function()
-      if client == "jdtls" then
+    on_init = function(client)
+      if clientDsc ~= "tsserver" then
+        return
+      end
+      client.resolved_capabilities.document_formatting = false
+      client.resolved_capatilities.document_range_formatting = false
+    end,
+    on_attach = function(client)
+      if clientDsc == "jdtls" then
         nnoremap("<leader>lpc", function() require("jdtls").update_project_config() end)
       end
       nnoremap("gd", function() vim.lsp.buf.definition() end)
@@ -161,15 +158,18 @@ local function config(_config, client)
         return
       end
       capabilities = cmp_nvim_lsp.update_capabilities(capabilities)
+      if clientDsc == "tsserver" then
+        capabilities.document_range_formatting = false
+        capabilities.document_formatting = false
+      end
     end,
   }, _config or {})
 end
 
 for _, server in pairs(servers) do
-  local opts = config()
+  local opts = config({}, server)
   if server == "jdtls" then
-    local jdtlsOpts = { cmd = { "jdtls" } } 
-    opts = config({}, "jdtls")
+    local jdtlsOpts = { cmd = { "jdtls" } }
     opts = vim.tbl_deep_extend("force", jdtlsOpts, opts)
   end
   if server == "cssls" then
@@ -180,13 +180,22 @@ for _, server in pairs(servers) do
   end
   if server == "tsserver" then
     local tsserverOpts = {
-      filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "json" }
+      filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "json" },
+      settings = {
+        tsserver = {
+          format = { enable = false },
+        },
+        eslint = {
+          fomat = { enable = false },
+        },
+      },
     }
     opts = vim.tbl_deep_extend("force", tsserverOpts, opts)
+    opts = config(opts, server)
   end
   if server == "volar" then
     local volarOpts = {
-      filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue", "json" }
+      filetypes = { "typescript", "javascript", "vue", "json" }
     }
     opts = vim.tbl_deep_extend("force", volarOpts, opts)
   end

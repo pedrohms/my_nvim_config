@@ -11,10 +11,22 @@ function bind(op, outer_opts)
     end
 end
 
+
+function unbind(op)
+    return function(lhs)
+        vim.keymap.del(op, lhs, { buffer = true })
+    end
+end
+
 M.nmap = bind("n", { noremap = false })
 M.nnoremap = bind("n")
 M.vnoremap = bind("v")
 M.xnoremap = bind("x")
 M.inoremap = bind("i")
+
+M.nunremap = unbind("n")
+M.iunremap = unbind("i")
+M.vunremap = unbind("v")
+M.xunremap = unbind("x")
 
 return M

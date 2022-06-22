@@ -101,7 +101,7 @@ return packer.startup(function(use)
   use "mfussenegger/nvim-jdtls"
   use "moll/vim-bbye"
 
-    -- snippets
+  -- snippets
   use "rafamadriz/friendly-snippets" -- a bunch of snippets to use
-  use 'L3MON4D3/LuaSnip'
+  use "L3MON4D3/LuaSnip"
 end)
