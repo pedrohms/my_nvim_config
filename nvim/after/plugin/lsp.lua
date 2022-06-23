@@ -9,6 +9,11 @@ if os.getenv('OS') == "Windows_NT" then
 end
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
+local status_cmp_ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+if not status_cmp_ok then
+  return
+end
+capabilities = cmp_nvim_lsp.update_capabilities(capabilities)
 capabilities.textDocument.completion.completionItem.snippetSupport = true
 
 
@@ -24,12 +29,12 @@ end
 
 local telescope_ok, telescope_theme = pcall(require, "telescope.themes")
 if not telescope_ok then
- return 
+  return
 end
 
 local telescope_builtin_ok, telescope_builtin = pcall(require, "telescope.builtin")
 if not telescope_builtin_ok then
- return 
+  return
 end
 
 local nopreview = telescope_theme.get_dropdown { previewer = false }
@@ -138,7 +143,7 @@ cmp.setup({
 
 local function config(_config, clientDsc)
   return vim.tbl_deep_extend("force", {
-    capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities()),
+    capabilities = capabilities,
     on_init = function(client)
       local disable_format = function(c)
         if c["server_capatilities"] ~= nil then
@@ -186,12 +191,6 @@ local function config(_config, clientDsc)
       else
         nnoremap("<leader>lf", function() vim.lsp.buf.format { async = true } end)
       end
-      capabilities.textDocument.completion.completionItem.snippetSupport = true
-      local status_cmp_ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
-      if not status_cmp_ok then
-        return
-      end
-      capabilities = cmp_nvim_lsp.update_capabilities(capabilities)
     end,
   }, _config or {})
 end
@@ -213,10 +212,10 @@ for _, server in pairs(servers) do
     opts = vim.tbl_deep_extend("force", jdtlsOpts, opts)
   end
   if server == "cssls" then
-    local htmlOpts = {
-      filetypes = { "css", "html",  "typescriptreact", "vue" }
+    local cssls_opts= {
+      filetypes = { "css", "html", "typescriptreact", "vue" }
     }
-    opts = vim.tbl_deep_extend("force", htmlOpts, opts)
+    opts = vim.tbl_deep_extend("force", cssls_opts, opts)
   end
   if server == "tsserver" then
     local tsserverOpts = {
@@ -234,7 +233,7 @@ for _, server in pairs(servers) do
   end
   if server == "volar" then
     local volarOpts = {
-      filetypes = {  "vue", "json" }
+      filetypes = { "vue", "json" }
     }
     opts = vim.tbl_deep_extend("force", volarOpts, opts)
   end
@@ -273,6 +272,7 @@ for _, server in pairs(servers) do
         "sss",
         "hbs",
         "handlebars",
+        "vue",
       }
     }
     opts = vim.tbl_deep_extend("force", emmet_ls_opts, opts)
@@ -305,7 +305,7 @@ for _, server in pairs(servers) do
     opts = vim.tbl_deep_extend("force", sumnekoOpts, opts)
   end
   -- if server ~= "jdtls" then
-    lspconfig[server].setup(opts)
+  lspconfig[server].setup(opts)
   -- end
 end
 
@@ -343,4 +343,5 @@ require("luasnip.loaders.from_vscode").lazy_load({
   exclude = {},
 })
 
+require("luasnip.loaders.from_vscode").lazy_load()
 require("user.lsp.null-ls")
