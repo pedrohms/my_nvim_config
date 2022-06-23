@@ -2,10 +2,10 @@ local Remap = require("user.keymap")
 local nnoremap = Remap.nnoremap
 local inoremap = Remap.inoremap
 
-local sumneko_root_path = vim.fn.stdpath "data" .. "/custom/sumneko"
-local sumneko_binary = sumneko_root_path .. "/bin/lua-language-server.exe"
+local sumneko_root_path = vim.fn.stdpath "data" .. "/lsp_servers/sumneko_lua/extensions/server/bin"
+local sumneko_binary = sumneko_root_path .. "/lua-language-server.exe"
 if os.getenv('OS') ~= "Windows_NT" then
-  sumneko_binary = sumneko_root_path .. "/bin/lua-language-server"
+  sumneko_binary = sumneko_root_path .. "/lua-language-server"
 end
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -129,11 +129,27 @@ local function config(_config, clientDsc)
   return vim.tbl_deep_extend("force", {
     capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities()),
     on_init = function(client)
-      if clientDsc ~= "tsserver" then
-        return
+
+      -- if clientDsc == "jdtls" then
+      -- local lombok = "-javaagent:" .. vim.fn.stdpath "data" .. "/lsp_servers/jdtls/lombok.jar"
+      -- local lombok2 = "-Xbootclasspath/a:" .. vim.fn.stdpath "data" .. "/lsp_servers/jdtls/lombok.jar"
+      -- local cmd = client.config.cmd
+      -- table.insert(cmd, 12, lombok)
+      -- table.insert(cmd, 13, lombok2)
+      -- client.config.cmd = cmd
+      -- require("user.log.log").println(vim.inspect(client))
+      -- require("user.log.log").println(vim.inspect(_config))
+      -- require("user.log.log").println(vim.inspect(capabilities))
+      -- end
+      if clientDsc == "tsserver" then
+        if client["server_capabilities"] == nil then
+          client.resolved_capabilities.document_formatting = false
+          client.resolved_capatilities.document_range_formatting = false
+        else
+          client.server_capabilities.documentFormattingProvider = false
+          client.server_capatilities.documentRangeFormattingProvider = false
+        end
       end
-      client.resolved_capabilities.document_formatting = false
-      client.resolved_capatilities.document_range_formatting = false
     end,
     on_attach = function(client)
       if clientDsc == "jdtls" then
@@ -151,7 +167,11 @@ local function config(_config, clientDsc)
       inoremap("<C-h>", function() vim.lsp.buf.signature_help() end)
       inoremap("<C-K>", function() vim.lsp.buf.hover() end)
       nnoremap("<leader>lds", "<cmd>Telescope lsp_document_symbols<cr>")
-      nnoremap("<leader>lf", function() vim.lsp.buf.formatting() end)
+      if vim.lsp.buf["format"] == nil then
+        nnoremap("<leader>lf", function() vim.lsp.buf.formatting() end)
+      else
+        nnoremap("<leader>lf", function() vim.lsp.buf.format { async = true } end)
+      end
       capabilities.textDocument.completion.completionItem.snippetSupport = true
       local status_cmp_ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
       if not status_cmp_ok then
@@ -169,8 +189,13 @@ end
 for _, server in pairs(servers) do
   local opts = config({}, server)
   if server == "jdtls" then
-    local jdtlsOpts = { cmd = { "jdtls" } }
+    local jdtlsOpts = {
+      cmd = {
+        "jdtls",
+      },
+    }
     opts = vim.tbl_deep_extend("force", jdtlsOpts, opts)
+    require("user.log.log").println(vim.inspect(opts))
   end
   if server == "cssls" then
     local htmlOpts = {
