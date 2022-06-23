@@ -2,10 +2,10 @@ local Remap = require("user.keymap")
 local nnoremap = Remap.nnoremap
 local inoremap = Remap.inoremap
 
-local sumneko_root_path = vim.fn.stdpath "data" .. "/lsp_servers/sumneko_lua/extensions/server/bin"
-local sumneko_binary = sumneko_root_path .. "/lua-language-server.exe"
-if os.getenv('OS') ~= "Windows_NT" then
-  sumneko_binary = sumneko_root_path .. "/lua-language-server"
+local sumneko_root_path = vim.fn.stdpath "data" .. "/lsp_servers/sumneko_lua/extension/server/bin"
+local sumneko_binary = sumneko_root_path .. "/lua-language-server"
+if os.getenv('OS') == "Windows_NT" then
+  sumneko_binary = sumneko_binary .. ".exe"
 end
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -22,7 +22,17 @@ if not lspconfig_status_ok then
   return
 end
 
+local telescope_ok, telescope_theme = pcall(require, "telescope.themes")
+if not telescope_ok then
+ return 
+end
 
+local telescope_builtin_ok, telescope_builtin = pcall(require, "telescope.builtin")
+if not telescope_builtin_ok then
+ return 
+end
+
+local nopreview = telescope_theme.get_dropdown { previewer = false }
 
 
 local servers = {
@@ -97,9 +107,10 @@ cmp.setup({
     end,
   },
   mapping = cmp.mapping.preset.insert({
-    ["<C-y>"] = cmp.mapping.confirm({ select = true }),
+    ["<CR>"] = cmp.mapping.confirm({ select = true }),
     ["<C-u>"] = cmp.mapping.scroll_docs(-4),
     ["<C-d>"] = cmp.mapping.scroll_docs(4),
+    ["<C-l>"] = cmp.mapping.close(),
     ["<C-Space>"] = cmp.mapping.complete(),
   }),
 
@@ -129,27 +140,30 @@ local function config(_config, clientDsc)
   return vim.tbl_deep_extend("force", {
     capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities()),
     on_init = function(client)
-
-      -- if clientDsc == "jdtls" then
-      -- local lombok = "-javaagent:" .. vim.fn.stdpath "data" .. "/lsp_servers/jdtls/lombok.jar"
-      -- local lombok2 = "-Xbootclasspath/a:" .. vim.fn.stdpath "data" .. "/lsp_servers/jdtls/lombok.jar"
-      -- local cmd = client.config.cmd
-      -- table.insert(cmd, 12, lombok)
-      -- table.insert(cmd, 13, lombok2)
-      -- client.config.cmd = cmd
-      -- require("user.log.log").println(vim.inspect(client))
-      -- require("user.log.log").println(vim.inspect(_config))
-      -- require("user.log.log").println(vim.inspect(capabilities))
-      -- end
-      if clientDsc == "tsserver" then
-        if client["server_capabilities"] == nil then
-          client.resolved_capabilities.document_formatting = false
-          client.resolved_capatilities.document_range_formatting = false
-        else
-          client.server_capabilities.documentFormattingProvider = false
-          client.server_capatilities.documentRangeFormattingProvider = false
+      local disable_format = function(c)
+        if c["server_capatilities"] ~= nil then
+          c.server_capabilities.document_formatting = false
+          c.server_capabilities.document_range_formatting = false
+        end
+        if c["resolved_capabilities"] ~= nil then
+          c.resolved_capabilities.document_formatting = false
+          c.resolved_capatilities.document_range_formatting = false
         end
       end
+      if clientDsc == "jdtls" then
+        local lombok = "-javaagent:" .. vim.fn.stdpath "data" .. "/lsp_servers/jdtls/lombok.jar"
+        local lombok2 = "-Xbootclasspath/a:" .. vim.fn.stdpath "data" .. "/lsp_servers/jdtls/lombok.jar"
+        local cmd = client.config.cmd
+        table.insert(cmd, 12, lombok)
+        table.insert(cmd, 13, lombok2)
+        client.config.cmd = cmd
+        -- disable_format(client)
+        -- require("user.log.log").println(vim.inspect(client))
+      end
+      if clientDsc == "tsserver" then
+        disable_format(client)
+      end
+
     end,
     on_attach = function(client)
       if clientDsc == "jdtls" then
@@ -166,7 +180,7 @@ local function config(_config, clientDsc)
       nnoremap("<leader>lrn", function() vim.lsp.buf.rename() end)
       inoremap("<C-h>", function() vim.lsp.buf.signature_help() end)
       inoremap("<C-K>", function() vim.lsp.buf.hover() end)
-      nnoremap("<leader>lds", "<cmd>Telescope lsp_document_symbols<cr>")
+      nnoremap("<leader>lds", function() telescope_builtin.lsp_document_symbols(nopreview) end)
       if vim.lsp.buf["format"] == nil then
         nnoremap("<leader>lf", function() vim.lsp.buf.formatting() end)
       else
@@ -178,10 +192,6 @@ local function config(_config, clientDsc)
         return
       end
       capabilities = cmp_nvim_lsp.update_capabilities(capabilities)
-      if clientDsc == "tsserver" then
-        capabilities.document_range_formatting = false
-        capabilities.document_formatting = false
-      end
     end,
   }, _config or {})
 end
@@ -193,13 +203,18 @@ for _, server in pairs(servers) do
       cmd = {
         "jdtls",
       },
+      settings = {
+        java = {
+          signatureHelp = { enabled = true },
+          -- format = { enabled = false },
+        },
+      },
     }
     opts = vim.tbl_deep_extend("force", jdtlsOpts, opts)
-    require("user.log.log").println(vim.inspect(opts))
   end
   if server == "cssls" then
     local htmlOpts = {
-      filetypes = { "css", "html" }
+      filetypes = { "css", "html",  "typescriptreact", "vue" }
     }
     opts = vim.tbl_deep_extend("force", htmlOpts, opts)
   end
@@ -216,11 +231,10 @@ for _, server in pairs(servers) do
       },
     }
     opts = vim.tbl_deep_extend("force", tsserverOpts, opts)
-    opts = config(opts, server)
   end
   if server == "volar" then
     local volarOpts = {
-      filetypes = { "typescript", "javascript", "vue", "json" }
+      filetypes = {  "vue", "json" }
     }
     opts = vim.tbl_deep_extend("force", volarOpts, opts)
   end
@@ -291,7 +305,7 @@ for _, server in pairs(servers) do
     opts = vim.tbl_deep_extend("force", sumnekoOpts, opts)
   end
   -- if server ~= "jdtls" then
-  lspconfig[server].setup(opts)
+    lspconfig[server].setup(opts)
   -- end
 end
 
@@ -329,6 +343,4 @@ require("luasnip.loaders.from_vscode").lazy_load({
   exclude = {},
 })
 
-
 require("user.lsp.null-ls")
-print "teste"
