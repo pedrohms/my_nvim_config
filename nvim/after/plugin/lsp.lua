@@ -145,11 +145,11 @@ local function config(_config, clientDsc)
     capabilities = capabilities,
     on_init = function(client)
       local disable_format = function(c, d)
-        if c["server_capatilities"] ~= nil  then
+        if c["server_capatilities"] ~= nil then
           c.server_capabilities.document_formatting = false
           c.server_capabilities.document_range_formatting = false
         end
-        if d ~= nil then
+        if os.getenv("OS") ~= "Windows_NT" then
           return
         end
         if c["resolved_capabilities"] ~= nil then
@@ -158,12 +158,16 @@ local function config(_config, clientDsc)
         end
       end
       if clientDsc == "jdtls" then
-        local lombok = "-javaagent:" .. vim.fn.stdpath "data" .. "/lsp_servers/jdtls/lombok.jar"
-        local lombok2 = "-Xbootclasspath/a:" .. vim.fn.stdpath "data" .. "/lsp_servers/jdtls/lombok.jar"
-        local cmd = client.config.cmd
-        table.insert(cmd, 12, lombok)
-        table.insert(cmd, 13, lombok2)
-        client.config.cmd = cmd
+        local java_config = require("user.lsp.settings.java_config")
+
+        client.config.settings = java_config.settings
+        client.config.cmd = java_config.cmd
+        -- local lombok = "-javaagent:" .. vim.fn.stdpath "data" .. "/lsp_servers/jdtls/lombok.jar"
+        -- local lombok2 = "-Xbootclasspath/a:" .. vim.fn.stdpath "data" .. "/lsp_servers/jdtls/lombok.jar"
+        -- local cmd = client.config.cmd
+        -- table.insert(cmd, 12, lombok)
+        -- table.insert(cmd, 13, lombok2)
+        -- client.config.cmd = cmd
         -- disable_format(client)
         -- require("user.log.log").println(vim.inspect(client))
       end
@@ -199,23 +203,9 @@ end
 
 for _, server in pairs(servers) do
   local opts = config({}, server)
-  if server == "jdtls" then
-    local jdtlsOpts = {
-      cmd = {
-        "jdtls",
-      },
-      settings = {
-        java = {
-          signatureHelp = { enabled = true },
-          -- format = { enabled = false },
-        },
-      },
-    }
-    opts = vim.tbl_deep_extend("force", jdtlsOpts, opts)
-  end
   if server == "cssls" then
-    local cssls_opts= {
-      filetypes = { "css", "html", "typescriptreact", "vue" }
+    local cssls_opts = {
+      filetypes = { "css", "html", "typescriptreact", "vue", "scss" }
     }
     opts = vim.tbl_deep_extend("force", cssls_opts, opts)
   end
@@ -266,7 +256,6 @@ for _, server in pairs(servers) do
         "haml",
         "xml",
         "xsl",
-        "pug",
         "slim",
         "sass",
         "stylus",
@@ -329,7 +318,8 @@ local snippets_paths = function()
   local plugins = { "friendly-snippets" }
   local paths = {}
   local path
-  local root_path = vim.fn.stdpath "data" .. "/vim_snipets/plugged/"
+  -- local root_path = vim.fn.stdpath "data" .. "/vim_snipets/plugged/"
+  local root_path = vim.fn.stdpath "data" .. "/site/pack/packer/start/"
   for _, plug in ipairs(plugins) do
     path = root_path .. plug
     if vim.fn.isdirectory(path) ~= 0 then
@@ -342,8 +332,7 @@ end
 require("luasnip.loaders.from_vscode").lazy_load({
   paths = snippets_paths(),
   include = nil, -- Load all languages
-  exclude = {},
+  exclude = { "pug" },
 })
 
-require("luasnip.loaders.from_vscode").lazy_load()
 require("user.lsp.null-ls")
