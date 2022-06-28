@@ -144,7 +144,7 @@ local function config(_config, clientDsc)
   return vim.tbl_deep_extend("force", {
     capabilities = capabilities,
     on_init = function(client)
-      local disable_format = function(c, d)
+      local disable_format = function(c)
         if c["server_capatilities"] ~= nil then
           c.server_capabilities.document_formatting = false
           c.server_capabilities.document_range_formatting = false
@@ -172,7 +172,7 @@ local function config(_config, clientDsc)
         -- require("user.log.log").println(vim.inspect(client))
       end
       if clientDsc == "tsserver" then
-        disable_format(client, clientDsc)
+        disable_format(client)
       end
 
     end,

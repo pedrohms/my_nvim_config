@@ -19,7 +19,7 @@ keymap.vnoremap(">", ">gv")
 keymap.nnoremap("<S-l>", ":bnext<CR>")
 keymap.nnoremap("<S-h>", ":bprevious<CR>")
 keymap.nnoremap("<leader>c", "<cmd>Bdelete!<CR>")
-keymap.nnoremap("<Esc><Esc>", "<cmd>nohlsearch<cr>")
+keymap.nnoremap("<leader>sh", "<cmd>nohlsearch<cr>")
 
 keymap.nnoremap("<leader>b", function() require("telescope.builtin").buffers(nopreview) end)
 
