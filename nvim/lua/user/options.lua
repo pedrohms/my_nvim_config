@@ -1,5 +1,4 @@
 local options = {
-  -- shell = "pwsh.exe",
   clipboard = "unnamedplus",
   number = true,
   background = "dark",
@@ -30,6 +29,9 @@ local options = {
 }
 vim.opt.isfname:append("@-@")
 vim.opt.shortmess:append("c")
+-- if os.getenv("OS") == "Windows_NT" then
+--   vim.o.shell = "pwsh.exe -NoLogo"
+-- end
 for k, v in pairs(options) do
   vim.opt[k] = v
 end

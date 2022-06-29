@@ -27,20 +27,11 @@ if not lspconfig_status_ok then
   return
 end
 
-local telescope_ok, telescope_theme = pcall(require, "telescope.themes")
-if not telescope_ok then
-  return
-end
 
-local telescope_builtin_ok, telescope_builtin = pcall(require, "telescope.builtin")
-if not telescope_builtin_ok then
-  return
-end
-
-local nopreview = telescope_theme.get_dropdown { previewer = false }
 
 
 local servers = {
+  "denols",
   "dartls",
   "emmet_ls",
   "eslint",
@@ -170,8 +161,7 @@ local function config(_config, clientDsc)
         -- client.config.cmd = cmd
         -- disable_format(client)
         -- require("user.log.log").println(vim.inspect(client))
-      end
-      if clientDsc == "tsserver" then
+      else
         disable_format(client)
       end
 
@@ -191,7 +181,10 @@ local function config(_config, clientDsc)
       nnoremap("<leader>lrn", function() vim.lsp.buf.rename() end)
       inoremap("<C-h>", function() vim.lsp.buf.signature_help() end)
       inoremap("<C-K>", function() vim.lsp.buf.hover() end)
-      nnoremap("<leader>lds", function() telescope_builtin.lsp_document_symbols(nopreview) end)
+      -- nnoremap("<leader>lds", "<cmd>Telescope lsp_document_symbols<cr>")
+      nnoremap("<leader>lds", function() require("telescope.builtin").lsp_document_symbols(require("telescope.themes")
+          .get_dropdown { previewer = false })
+      end)
       if vim.lsp.buf["format"] == nil then
         nnoremap("<leader>lf", function() vim.lsp.buf.formatting() end)
       else

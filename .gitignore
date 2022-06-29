@@ -1,3 +1,5 @@
 nvim-data/
 .vim/
 *.jar
+configstore/
+nvim/plugin/packer_compiled.lua
