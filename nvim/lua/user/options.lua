@@ -33,7 +33,7 @@ vim.opt.isfname:append("@-@")
 vim.opt.shortmess:append("c")
 
 if os.getenv("OS") == "Windows_NT" then
-  vim.o.shell = "pwsh.exe -NoLogo"
+--   vim.o.shell = "pwsh.exe -NoLogo"
   vim.o.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;"
   vim.cmd [[
 		let &shellredir = '2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode'

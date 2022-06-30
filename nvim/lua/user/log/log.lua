@@ -16,7 +16,7 @@ end
 
 M.println = function(message)
   saveOnFile(message)
-end  
+end
 
 
-return M 
+return M
