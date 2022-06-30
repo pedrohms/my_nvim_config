@@ -4,15 +4,12 @@ if system == "Windows_NT" then
 else
   CONFIG = "linux"
 end
-
 local root_markers = { ".git", "mvnw", "gradlew", "pom.xml", "build.gradle" }
 local root_dir = require("jdtls.setup").find_root(root_markers)
 
 if (root_dir == nil) or (root_dir == "") then
   return
 end
-
-local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
 
 local workspace_dir = root_dir
 
@@ -22,7 +19,7 @@ local bundles = {
   ),
 }
 
-vim.list_extend(bundles, vim.split(vim.fn.stdpath "data" .. "/custom/dap/jdtls-test/vscode-java-test/server/*.jar"), "\n"))
+vim.list_extend(bundles, vim.split(vim.fn.glob(vim.fn.stdpath "data" .. "/custom/dap/jdtls-test/vscode-java-test/server/*.jar"), "\n"))
 
 return {
   filetypes = { "java" },
@@ -55,7 +52,7 @@ return {
         includeDecompiledSources = true,
       },
       format = {
-        enabled = true,
+        enabled = false,
       },
       signatureHelp = { enabled = true },
     },

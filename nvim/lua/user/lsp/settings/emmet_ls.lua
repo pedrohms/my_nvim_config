@@ -12,7 +12,6 @@ return {
     "haml",
     "xml",
     "xsl",
-    "pug",
     "slim",
     "sass",
     "stylus",
@@ -20,5 +19,6 @@ return {
     "sss",
     "hbs",
     "handlebars",
+    "vue",
   },
 }

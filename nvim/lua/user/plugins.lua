@@ -15,6 +15,29 @@ if fn.empty(fn.glob(install_path)) > 0 then
   vim.cmd [[packadd packer.nvim]]
 end
 
+local jdtls_debug_path = vim.fn.stdpath "data" .. "/custom/dap/jdtls"
+if vim.fn.empty(vim.fn.glob(jdtls_debug_path)) > 0 then
+  DAP_JDTLS_BOOTSTRAP = vim.fn.system {
+    "git",
+    "clone",
+    "--depth",
+    "1",
+    "https://github.com/microsoft/java-debug",
+    jdtls_debug_path,
+  }
+end
+
+local jdtls_test_path = vim.fn.stdpath "data" .. "/custom/dap/jdtls-test"
+if vim.fn.empty(vim.fn.glob(jdtls_test_path)) > 0 then
+  DAP_JDTLS_BOOTSTRAP = vim.fn.system {
+    "git",
+    "clone",
+    "--depth",
+    "1",
+    "https://github.com/microsoft/vscode-java-test.git",
+    jdtls_test_path,
+  }
+end
 -- Autocommand that reloads neovim whenever you save the plugins.lua file
 vim.cmd [[
   augroup packer_user_config
@@ -42,10 +65,8 @@ return packer.startup(function(use)
   use "nvim-treesitter/nvim-treesitter"
   use "nvim-lua/popup.nvim"
   -- All the things
-  use {
-    "williamboman/nvim-lsp-installer",
-    "neovim/nvim-lspconfig",
-  }
+  use "williamboman/nvim-lsp-installer"
+  use "neovim/nvim-lspconfig"
   use 'hrsh7th/cmp-nvim-lsp'
   use 'hrsh7th/cmp-buffer'
   use 'hrsh7th/nvim-cmp'
