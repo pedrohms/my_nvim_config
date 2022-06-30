@@ -69,6 +69,8 @@ local function lsp_keymaps(bufnr)
 end
 
 local disable_format = function(c)
+
+  require("user.log.log").println("desabilitei o format do " .. c.name)
   if c["server_capatilities"] ~= nil then
     c.server_capabilities.document_formatting = false
     c.server_capabilities.document_range_formatting = false
@@ -82,15 +84,24 @@ local disable_format = function(c)
   end
 end
 
+local exclude_nullls = {
+  "sumneko_lua"
+}
 M.on_init = function(client)
   if client.name == "jdtls" then
     local java_config = require("user.lsp.settings.java_config")
 
     client.config.settings = java_config.settings
     client.config.cmd = java_config.cmd
+  else
+    for i, ft in pairs(exclude_nullls) do
+      if ft == client.name then
+        goto jump_disable
+      end
+    end
+    disable_format(client)
+    ::jump_disable::
   end
-
-  disable_format(client)
 end
 M.on_attach = function(client, bufnr)
   local status_cmp_ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
