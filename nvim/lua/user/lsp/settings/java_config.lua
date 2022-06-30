@@ -52,7 +52,7 @@ return {
         includeDecompiledSources = true,
       },
       format = {
-        enabled = false,
+        enabled = true,
       },
       signatureHelp = { enabled = true },
     },

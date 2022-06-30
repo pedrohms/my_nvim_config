@@ -7,7 +7,6 @@ M.config = function()
     -- size can be a number or function which is passed the current terminal
     size = 20,
     open_mapping = [[<c-\>]],
-    -- open_mapping = [[<c-t>]],
     hide_numbers = true, -- hide the number column in toggleterm buffers
     shade_filetypes = {},
     shade_terminals = true,
@@ -48,8 +47,8 @@ end
 
 M.setup = function()
   local terminal = require "toggleterm"
-  local term = require("user.terminal")
-  terminal.setup(term.config)
+  local term = require("user.terminal").config()
+  terminal.setup(term)
 
   for i, exec in pairs(term.execs) do
     local opts = {
@@ -58,15 +57,15 @@ M.setup = function()
       label = exec[3],
       -- NOTE: unable to consistently bind id/count <= 9, see #2146
       count = i + 100,
-      direction = exec[4] or term.terminal.direction,
-      size = term.terminal.size,
+      direction = exec[4] or term.direction,
+      size = term.size,
     }
 
     M.add_exec(opts)
   end
 
-  if term.terminal.on_config_done then
-    term.terminal.on_config_done(terminal)
+  if term.on_config_done then
+    term.on_config_done(terminal)
   end
 end
 
@@ -82,13 +81,11 @@ M.add_exec = function(opts)
     opts.count,
     opts.direction
   )
-
 end
 
 M._exec_toggle = function(opts)
   local Terminal = require("toggleterm.terminal").Terminal
-  -- local term = Terminal:new { cmd = opts.cmd, count = opts.count, direction = opts.direction }
-  local term = Terminal:new {  }
+  local term = Terminal:new { cmd = opts.cmd, count = opts.count, direction = opts.direction }
   term:toggle(20 , opts.direction)
 end
 

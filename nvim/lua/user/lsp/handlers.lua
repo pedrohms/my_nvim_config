@@ -42,16 +42,19 @@ M.setup = function()
   -- })
 end
 
-local function lsp_keymaps(bufnr)
+local function lsp_keymaps(client, bufnr)
   local Remap = require("user.keymap")
   local nnoremap = Remap.nnoremap
   local inoremap = Remap.inoremap
+  if client.name == "jdtls" then
+    nnoremap("<leader>lpc", function() require("jdtls").update_project_config() end)
+  end
   nnoremap("gd", function() vim.lsp.buf.definition() end)
   nnoremap("K", function() vim.lsp.buf.hover() end)
   nnoremap("<leader>lws", function() vim.lsp.buf.workspace_symbol() end)
   nnoremap("<leader>ld", function() vim.diagnostic.open_float() end)
-  nnoremap("[d", function() vim.lsp.diagnostic.goto_next() end)
-  nnoremap("]d", function() vim.lsp.diagnostic.goto_prev() end)
+  nnoremap("[d", function() vim.diagnostic.goto_next() end)
+  nnoremap("]d", function() vim.diagnostic.goto_prev() end)
   nnoremap("<leader>lca", function() vim.lsp.buf.code_action() end)
   nnoremap("<leader>lrf", function() vim.lsp.buf.references() end)
   nnoremap("<leader>lrn", function() vim.lsp.buf.rename() end)
@@ -61,11 +64,11 @@ local function lsp_keymaps(bufnr)
   nnoremap("<leader>lds", function() require("telescope.builtin").lsp_document_symbols(require("telescope.themes")
       .get_dropdown { previewer = false })
   end)
-  if vim.lsp.buf["format"] == nil then
-    nnoremap("<leader>lf", function() vim.lsp.buf.formatting() end)
-  else
+  -- if vim.lsp.buf["format"] == nil then
+  --   nnoremap("<leader>lf", function() vim.lsp.buf.formatting() end)
+  -- else
     nnoremap("<leader>lf", function() vim.lsp.buf.format { async = true } end)
-  end
+  -- end
 end
 
 local disable_format = function(c)
@@ -75,17 +78,17 @@ local disable_format = function(c)
     c.server_capabilities.document_formatting = false
     c.server_capabilities.document_range_formatting = false
   end
-  if os.getenv("OS") ~= "Windows_NT" then
-    return
-  end
-  if c["resolved_capabilities"] ~= nil then
-    c.resolved_capabilities.document_formatting = false
-    c.resolved_capatilities.document_range_formatting = false
-  end
+  -- if os.getenv("OS") ~= "Windows_NT" then
+  --   return
+  -- end
+  -- if c["resolved_capabilities"] ~= nil then
+  --   c.resolved_capabilities.document_formatting = false
+  --   c.resolved_capatilities.document_range_formatting = false
+  -- end
 end
 
 local exclude_nullls = {
-  "sumneko_lua"
+  "sumneko_lua",
 }
 M.on_init = function(client)
   if client.name == "jdtls" then
@@ -93,6 +96,7 @@ M.on_init = function(client)
 
     client.config.settings = java_config.settings
     client.config.cmd = java_config.cmd
+    disable_format(client)
   else
     for i, ft in pairs(exclude_nullls) do
       if ft == client.name then
@@ -109,7 +113,7 @@ M.on_attach = function(client, bufnr)
     return
   end
 
-  lsp_keymaps(bufnr)
+  lsp_keymaps(client, bufnr)
 
   if client.name == "jdtls" then
     vim.lsp.codelens.refresh()

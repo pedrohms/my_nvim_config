@@ -64,20 +64,23 @@ vim.api.nvim_create_autocmd({ "CmdWinEnter" }, {
   end,
 })
 
-if os.getenv('OS') ~= "Windows_NT" then
-  local status_winbar, winbar = pcall(require, "user.winbar")
-  if status_winbar then
-    vim.api.nvim_create_autocmd({ "CursorMoved", "BufWinEnter", "BufFilePost", "InsertEnter", "BufWritePost" }, {
-      callback = function()
-        winbar.get_winbar()
-      end,
-    })
-  end
+-- if os.getenv('OS') ~= "Windows_NT" then
+local status_winbar, winbar = pcall(require, "user.winbar")
+if status_winbar then
+  -- vim.api.nvim_create_autocmd({ "CursorMoved", "BufWinEnter", "BufFilePost", "InsertEnter", "BufWritePost" }, {
+  vim.api.nvim_create_autocmd({ "CursorMoved", "BufWinEnter", "BufFilePost", "InsertEnter"  }, {
+    callback = function()
+      winbar.get_winbar()
+    end,
+  })
 end
+-- end
 
 vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
+  -- pattern = "*",
   callback = function()
     vim.cmd "set formatoptions-=cro"
+    -- vim.cmd "set formatoptions-=c formatoptions-=r formatoptions-=o"
   end,
 })
 

@@ -33,6 +33,7 @@ keymap.nnoremap("<leader>b", function() require("telescope.builtin").buffers(nop
 
 -- Telescope
 keymap.nnoremap("<leader>ff", function() require("telescope.builtin").find_files(nopreview) end)
+keymap.nnoremap("<leader>fp", "<cmd>Telescope projects<CR>")
 keymap.nnoremap("<leader>sk", "<cmd>Telescope keymaps<CR>")
 keymap.nnoremap("<leader>sc", "<cmd>Telescope commands<CR>")
 keymap.nnoremap("<leader>fg", "<cmd>Telescope live_grep<CR>")

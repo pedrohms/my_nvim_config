@@ -1,5 +1,6 @@
 local options = {
   clipboard = "unnamedplus",
+  mouse = "a",
   number = true,
   background = "dark",
   relativenumber = true,
@@ -11,6 +12,7 @@ local options = {
   shiftwidth = 2,
   expandtab = true,
   smartindent = true,
+  smartcase = true,
   nu = true,
   wrap = false,
   swapfile = false,
@@ -29,9 +31,17 @@ local options = {
 }
 vim.opt.isfname:append("@-@")
 vim.opt.shortmess:append("c")
--- if os.getenv("OS") == "Windows_NT" then
---   vim.o.shell = "pwsh.exe -NoLogo"
--- end
+
+if os.getenv("OS") == "Windows_NT" then
+  vim.o.shell = "pwsh.exe -NoLogo"
+  vim.o.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;"
+  vim.cmd [[
+		let &shellredir = '2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode'
+		let &shellpipe = '2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode'
+		set shellquote= shellxquote=
+  ]]
+end
+
 for k, v in pairs(options) do
   vim.opt[k] = v
 end

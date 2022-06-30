@@ -126,12 +126,19 @@ return packer.startup(function(use)
   use "rafamadriz/friendly-snippets" -- a bunch of snippets to use
   use "L3MON4D3/LuaSnip"
   use "ThePrimeagen/harpoon"
-  use "mattn/vim-gist"
 
-   -- DAP
+  -- DAP
   use "mfussenegger/nvim-dap"
   use "theHamsta/nvim-dap-virtual-text"
   use "rcarriga/nvim-dap-ui"
-  use "Pocco81/DAPInstall.nvim" use "mattn/webapi-vim"
+  use "Pocco81/DAPInstall.nvim"
   use "rcarriga/cmp-dap"
+
+
+  -- Git
+  use "lewis6991/gitsigns.nvim"
+  -- use "f-person/git-blame.nvim"
+  -- use "ruifm/gitlinker.nvim"
+  use "mattn/vim-gist"
+  use "mattn/webapi-vim"
 end)

@@ -23,6 +23,7 @@ local servers = {
   "vuels",
   "svelte",
   "tailwindcss",
+  "kotlin_language_server"
 }
 
 lsp_installer.setup()
