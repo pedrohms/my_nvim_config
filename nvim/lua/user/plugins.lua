@@ -105,4 +105,12 @@ return packer.startup(function(use)
   use "rafamadriz/friendly-snippets" -- a bunch of snippets to use
   use "L3MON4D3/LuaSnip"
   use "ThePrimeagen/harpoon"
+  use "mattn/vim-gist"
+
+   -- DAP
+  use "mfussenegger/nvim-dap"
+  use "theHamsta/nvim-dap-virtual-text"
+  use "rcarriga/nvim-dap-ui"
+  use "Pocco81/DAPInstall.nvim" use "mattn/webapi-vim"
+  use "rcarriga/cmp-dap"
 end)

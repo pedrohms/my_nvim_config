@@ -1,6 +1,7 @@
 require "user.plugins"
 -- require "user.lsp"
 require "user.winbar"
+require "user.gps"
 require "user.options"
 require "user.autocommands"
 require "user.bookmarks"

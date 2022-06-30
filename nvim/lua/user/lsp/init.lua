@@ -8,6 +8,30 @@ if os.getenv('OS') == "Windows_NT" then
   sumneko_binary = sumneko_binary .. ".exe"
 end
 
+local jdtls_debug_path = vim.fn.stdpath "data" .. "/custom/dap/jdtls"
+if vim.fn.empty(vim.fn.glob(jdtls_debug_path)) > 0 then
+  DAP_JDTLS_BOOTSTRAP = vim.fn.system {
+    "git",
+    "clone",
+    "--depth",
+    "1",
+    "https://github.com/microsoft/java-debug",
+    jdtls_debug_path,
+  }
+end
+
+local jdtls_test_path = vim.fn.stdpath "data" .. "/custom/dap/jdtls-test"
+if vim.fn.empty(vim.fn.glob(jdtls_test_path)) > 0 then
+  DAP_JDTLS_BOOTSTRAP = vim.fn.system {
+    "git",
+    "clone",
+    "--depth",
+    "1",
+    "https://github.com/microsoft/vscode-java-test.git",
+    jdtls_test_path,
+  }
+end
+
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 local status_cmp_ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
 if not status_cmp_ok then
@@ -168,6 +192,8 @@ local function config(_config, clientDsc)
     end,
     on_attach = function(client)
       if clientDsc == "jdtls" then
+        require("jdtls").setup_dap { hotcodereplace = "auto" }
+        require("jdtls.dap").setup_dap_main_class_configs()
         nnoremap("<leader>lpc", function() require("jdtls").update_project_config() end)
       end
       nnoremap("gd", function() vim.lsp.buf.definition() end)
@@ -288,9 +314,7 @@ for _, server in pairs(servers) do
     }
     opts = vim.tbl_deep_extend("force", sumnekoOpts, opts)
   end
-  -- if server ~= "jdtls" then
   lspconfig[server].setup(opts)
-  -- end
 end
 
 local opts = {

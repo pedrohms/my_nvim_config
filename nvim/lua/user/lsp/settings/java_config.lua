@@ -16,6 +16,14 @@ local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
 
 local workspace_dir = root_dir
 
+local bundles = {
+  vim.fn.glob(
+    vim.fn.stdpath "data" .. "/custom/dap/jdtls/com.microsoft.java.debug.plugin/target/com.microsoft.java.debug.plugin-*.jar"
+  ),
+}
+
+vim.list_extend(bundles, vim.split(vim.fn.stdpath "data" .. "/custom/dap/jdtls-test/vscode-java-test/server/*.jar"), "\n"))
+
 return {
   filetypes = { "java" },
   flags = {
@@ -23,7 +31,9 @@ return {
     allow_incremental_sync = true,
   },
   handlers = {},
-  init_options = {},
+  init_options = {
+    bunles = bundles,
+  },
   settings = {
     java = {
       eclipse = {
