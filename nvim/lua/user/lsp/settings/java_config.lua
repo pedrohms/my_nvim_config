@@ -114,7 +114,7 @@ return {
     "-XX:AdaptiveSizePolicyWeight=90",
     "-Djava.import.generatesMetadataFilesAtProjectRoot=false",
     "-Dsun.zip.disableMemoryMapping=true",
-    "-Xmx1G",
+    "-Xmx512M",
     "-Xms100m",
     "-javaagent:" .. vim.fn.stdpath "data" .. "/lsp_servers/jdtls/lombok.jar",
   }

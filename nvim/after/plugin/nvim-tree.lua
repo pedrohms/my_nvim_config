@@ -8,7 +8,7 @@ if status_ok then
       update_cwd = true
     },
     git = {
-      enable = true
+      enable = false 
     },
   })
 end

@@ -23,7 +23,8 @@ local servers = {
   "vuels",
   "svelte",
   "tailwindcss",
-  "kotlin_language_server"
+  "kotlin_language_server",
+  "powershell_es"
 }
 
 lsp_installer.setup()
@@ -60,6 +61,13 @@ for _, server in pairs(servers) do
   if server == "gopls" then
     local gopls_opts = require "user.lsp.settings.gopls"
     opts = vim.tbl_deep_extend("force", gopls_opts, opts)
+  end
+
+  if server == "powershell_es" then
+    local powershell_opts = {
+      filetype = { "ps1" },
+    }
+    opts = vim.tbl_deep_extend("force", powershell_opts, opts)
   end
   -- if server == "jdtls" then
   --   opts = vim.tbl_deep_extend("force", jdtls_opts, opts)

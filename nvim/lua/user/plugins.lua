@@ -142,4 +142,5 @@ return packer.startup(function(use)
   use "mattn/vim-gist"
   use "mattn/webapi-vim"
   use "tpope/vim-fugitive"
+  use "ThePrimeagen/git-worktree.nvim"
 end)

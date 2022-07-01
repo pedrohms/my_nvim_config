@@ -27,16 +27,17 @@ keymap.vnoremap(">", ">gv")
 keymap.nnoremap("<S-l>", ":bnext<CR>")
 keymap.nnoremap("<S-h>", ":bprevious<CR>")
 keymap.nnoremap("<leader>c", "<cmd>Bdelete!<CR>")
-keymap.nnoremap("<leader>sh", "<cmd>nohlsearch<cr>")
 
 keymap.nnoremap("<leader>b", function() require("telescope.builtin").buffers(nopreview) end)
 
 -- Telescope
-keymap.nnoremap("<leader>ff", function() require("telescope.builtin").find_files(nopreview) end)
-keymap.nnoremap("<leader>fp", "<cmd>Telescope projects<CR>")
+keymap.nnoremap("<leader>sh", "<cmd>nohlsearch<cr>")
+keymap.nnoremap("<leader>sf", function() require("telescope.builtin").find_files(nopreview) end)
+keymap.nnoremap("<leader>sp", "<cmd>Telescope projects<CR>")
+keymap.nnoremap("<leader>sg", "<cmd>Telescope live_grep<CR>")
 keymap.nnoremap("<leader>sk", "<cmd>Telescope keymaps<CR>")
 keymap.nnoremap("<leader>sc", "<cmd>Telescope commands<CR>")
-keymap.nnoremap("<leader>fg", "<cmd>Telescope live_grep<CR>")
+keymap.nnoremap("<leader>sr", "<cmd>Telescope oldfiles<CR>")
 
 keymap.nnoremap("<leader>e", ":NvimTreeToggle<CR>")
 
@@ -49,9 +50,16 @@ keymap.nnoremap("<leader>ma", function() require("telescope").extensions.vim_boo
 keymap.nnoremap("<leader>mf", function() require("telescope").extensions.vim_bookmarks.current_file(nopreview) end)
 
 
-keymap.nnoremap("<leader>a", function() require("harpoon.mark").add_file() end, silent)
-keymap.nnoremap("<C-e>", function() require("harpoon.ui").toggle_quick_menu() end, silent)
-keymap.nnoremap("<leader>tc", function() require("harpoon.cmd-ui").toggle_quick_menu() end, silent)
+-- Git
+keymap.nnoremap("<leader>gs", function() require('telescope').extensions.git_worktree.git_worktrees() end)
+keymap.nnoremap("<leader>gc", function() require('telescope').extensions.git_worktree.create_git_worktree() end)
+
+
+if os.getenv('OS') ~= "Winwos_NT" then
+  keymap.nnoremap("<leader>a", function() require("harpoon.mark").add_file() end, silent)
+  keymap.nnoremap("<C-e>", function() require("harpoon.ui").toggle_quick_menu() end, silent)
+  keymap.nnoremap("<leader>tc", function() require("harpoon.cmd-ui").toggle_quick_menu() end, silent)
+end
 
 -- keymap.nnoremap("<C-h>", function() require("harpoon.ui").nav_file(1) end, silent)
 -- keymap.nnoremap("<C-t>", function() require("harpoon.ui").nav_file(2) end, silent)
