@@ -131,14 +131,15 @@ return packer.startup(function(use)
   use "mfussenegger/nvim-dap"
   use "theHamsta/nvim-dap-virtual-text"
   use "rcarriga/nvim-dap-ui"
-  use "Pocco81/DAPInstall.nvim"
+  use "pedrohms/dap-install"
   use "rcarriga/cmp-dap"
 
 
   -- Git
   use "lewis6991/gitsigns.nvim"
-  -- use "f-person/git-blame.nvim"
-  -- use "ruifm/gitlinker.nvim"
+  use "f-person/git-blame.nvim"
+  use "ruifm/gitlinker.nvim"
   use "mattn/vim-gist"
   use "mattn/webapi-vim"
+  use "tpope/vim-fugitive"
 end)

@@ -40,6 +40,8 @@ if os.getenv("OS") == "Windows_NT" then
 		let &shellpipe = '2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode'
 		set shellquote= shellxquote=
   ]]
+else
+  vim.o.shell = "/bin/bash"
 end
 
 for k, v in pairs(options) do

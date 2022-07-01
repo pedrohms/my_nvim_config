@@ -1,6 +1,11 @@
 
 local M = {}
 
+local localshell = "fish"
+if os.getenv("OS") == "Windows_NT" then
+  localshell = "pwsh"
+end
+
 M.config = function()
   return {
     on_config_done = nil,
@@ -17,7 +22,7 @@ M.config = function()
     -- direction = 'vertical' | 'horizontal' | 'window' | 'float',
     direction = "float",
     close_on_exit = true, -- close the terminal window when the process exits
-    shell = "pwsh.exe -NoLogo", -- change the default shell
+    shell = localshell, -- change the default shell
     -- This field is only relevant if direction is set to 'float'
     float_opts = {
       -- The border key is *almost* the same as 'nvim_win_open'

@@ -13,18 +13,27 @@ if not dap_ui_status_ok then
   return
 end
 
--- local dap_install_status_ok, dap_install = pcall(require, "dap-install")
--- if not dap_install_status_ok then
---   return
--- end
 
 local Remap = require("user.keymap")
 local nnoremap = Remap.nnoremap
 local inoremap = Remap.inoremap
 
--- dap_install.setup {}
---
--- dap_install.config("python", {})
+local dap_install_status_ok, dap_install = pcall(require, "dap-install")
+if dap_install_status_ok then
+  dap_install.setup({
+    installation_path = vim.fn.stdpath("data") .. "/dapinstall/",
+  })
+  dap_install.config("python", {})
+  dap_install.config("jsnode", {})
+  dap_install.config("go_delve", {
+    {
+      type = "go",
+      name = "Debug",
+      request = "launch",
+      program = "${workspaceFolder}",
+    },
+  })
+end
 -- add other configs here
 daptext.setup()
 dapui.setup({
@@ -62,26 +71,27 @@ dap.listeners.before.event_exited["dapui_config"] = function()
   dapui.close()
 end
 
+require("user.dap.node")
+
 nnoremap("<leader>1", function()
-    dapui.toggle(1)
+  dapui.toggle(1)
 end)
 nnoremap("<leader>2", function()
-    dapui.toggle(2)
+  dapui.toggle(2)
 end)
 
 nnoremap("<Up>", function()
-    dap.continue()
+  dap.continue()
 end)
 nnoremap("<Down>", function()
-    dap.step_over()
+  dap.step_over()
 end)
 nnoremap("<Right>", function()
-    dap.step_into()
+  dap.step_into()
 end)
 nnoremap("<Left>", function()
-    dap.step_out()
+  dap.step_out()
 end)
 nnoremap("<F8>", function()
-    dap.toggle_breakpoint()
+  dap.toggle_breakpoint()
 end)
-
