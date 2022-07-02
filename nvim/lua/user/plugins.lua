@@ -125,7 +125,7 @@ return packer.startup(function(use)
   -- snippets
   use "rafamadriz/friendly-snippets" -- a bunch of snippets to use
   use "L3MON4D3/LuaSnip"
-  use "ThePrimeagen/harpoon"
+  -- use "ThePrimeagen/harpoon"
 
   -- DAP
   use "mfussenegger/nvim-dap"
@@ -137,8 +137,8 @@ return packer.startup(function(use)
 
   -- Git
   use "lewis6991/gitsigns.nvim"
-  use "f-person/git-blame.nvim"
-  use "ruifm/gitlinker.nvim"
+  -- use "f-person/git-blame.nvim"
+  -- use "ruifm/gitlinker.nvim"
   use "mattn/vim-gist"
   use "mattn/webapi-vim"
   use "tpope/vim-fugitive"

@@ -33,13 +33,21 @@ M.setup = function()
 
   vim.diagnostic.config(config)
 
-  -- vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
-  --   border = "rounded",
-  -- })
-  --
-  -- vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
-  --   border = "rounded",
-  -- })
+  vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
+      style = "minimal",
+      border = "rounded",
+      source = "always",
+      header = "",
+      prefix = "",
+  })
+
+  vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
+      style = "minimal",
+      border = "rounded",
+      source = "always",
+      header = "",
+      prefix = "",
+  })
 end
 
 local function lsp_keymaps(client, bufnr)
@@ -116,7 +124,7 @@ M.on_attach = function(client, bufnr)
   lsp_keymaps(client, bufnr)
 
   if client.name == "jdtls" then
-    vim.lsp.codelens.refresh()
+    -- vim.lsp.codelens.refresh()
     require("jdtls").setup_dap { hotcodereplace = "auto" }
     require("jdtls.dap").setup_dap_main_class_configs()
   end
