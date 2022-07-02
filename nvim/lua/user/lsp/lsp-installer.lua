@@ -24,7 +24,8 @@ local servers = {
   "svelte",
   "tailwindcss",
   "kotlin_language_server",
-  "powershell_es"
+  "powershell_es",
+  "lemminx"
 }
 
 lsp_installer.setup()
