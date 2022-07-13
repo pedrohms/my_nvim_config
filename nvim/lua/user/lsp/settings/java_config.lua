@@ -7,9 +7,9 @@ end
 local root_markers = { ".git", "mvnw", "gradlew", "pom.xml", "build.gradle" }
 local root_dir = require("jdtls.setup").find_root(root_markers)
 
-if (root_dir == nil) or (root_dir == "") then
-  return
-end
+-- if (root_dir == nil) or (root_dir == "") then
+--   return
+-- end
 
 local workspace_dir = root_dir
 
@@ -29,7 +29,7 @@ return {
   },
   handlers = {},
   init_options = {
-    bunles = bundles,
+    bundles = bundles,
   },
   settings = {
     java = {
@@ -93,7 +93,7 @@ return {
     },
   },
   cmd = {
-    "java",
+    os.getenv("JAVA_HOME") .. "/bin/java",
     "-Declipse.application=org.eclipse.jdt.ls.core.id1",
     "-Dosgi.bundles.defaultStartLevel=4",
     "-Declipse.product=org.eclipse.jdt.ls.core.product",

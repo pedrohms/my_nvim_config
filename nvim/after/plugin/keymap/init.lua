@@ -59,9 +59,8 @@ if os.getenv('OS') ~= "Winwos_NT" then
   keymap.nnoremap("<leader>a", function() require("harpoon.mark").add_file() end, silent)
   keymap.nnoremap("<C-e>", function() require("harpoon.ui").toggle_quick_menu() end, silent)
   keymap.nnoremap("<leader>tc", function() require("harpoon.cmd-ui").toggle_quick_menu() end, silent)
+  keymap.nnoremap("<A-1>", function() require("harpoon.ui").nav_file(1) end, silent)
+  keymap.nnoremap("<A-2>", function() require("harpoon.ui").nav_file(2) end, silent)
+  keymap.nnoremap("<A-3>", function() require("harpoon.ui").nav_file(3) end, silent)
+  keymap.nnoremap("<A-4>", function() require("harpoon.ui").nav_file(4) end, silent)
 end
-
--- keymap.nnoremap("<C-h>", function() require("harpoon.ui").nav_file(1) end, silent)
--- keymap.nnoremap("<C-t>", function() require("harpoon.ui").nav_file(2) end, silent)
--- keymap.nnoremap("<C-n>", function() require("harpoon.ui").nav_file(3) end, silent)
--- keymap.nnoremap("<C-s>", function() require("harpoon.ui").nav_file(4) end, silent)

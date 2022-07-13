@@ -34,19 +34,19 @@ M.setup = function()
   vim.diagnostic.config(config)
 
   vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
-      style = "minimal",
-      border = "rounded",
-      source = "always",
-      header = "",
-      prefix = "",
+    style = "minimal",
+    border = "rounded",
+    source = "always",
+    header = "",
+    prefix = "",
   })
 
   vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
-      style = "minimal",
-      border = "rounded",
-      source = "always",
-      header = "",
-      prefix = "",
+    style = "minimal",
+    border = "rounded",
+    source = "always",
+    header = "",
+    prefix = "",
   })
 end
 
@@ -75,13 +75,11 @@ local function lsp_keymaps(client, bufnr)
   -- if vim.lsp.buf["format"] == nil then
   --   nnoremap("<leader>lf", function() vim.lsp.buf.formatting() end)
   -- else
-    nnoremap("<leader>lf", function() vim.lsp.buf.format { async = true } end)
+  nnoremap("<leader>lf", function() vim.lsp.buf.format { async = true } end)
   -- end
 end
 
 local disable_format = function(c)
-
-  require("user.log.log").println("desabilitei o format do " .. c.name)
   if c["server_capatilities"] ~= nil then
     c.server_capabilities.document_formatting = false
     c.server_capabilities.document_range_formatting = false
@@ -101,7 +99,6 @@ local exclude_nullls = {
 M.on_init = function(client)
   if client.name == "jdtls" then
     local java_config = require("user.lsp.settings.java_config")
-
     client.config.settings = java_config.settings
     client.config.cmd = java_config.cmd
     disable_format(client)
@@ -124,7 +121,7 @@ M.on_attach = function(client, bufnr)
   lsp_keymaps(client, bufnr)
 
   if client.name == "jdtls" then
-    -- vim.lsp.codelens.refresh()
+    vim.lsp.codelens.refresh()
     require("jdtls").setup_dap { hotcodereplace = "auto" }
     require("jdtls.dap").setup_dap_main_class_configs()
   end

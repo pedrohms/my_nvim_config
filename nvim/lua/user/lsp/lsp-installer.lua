@@ -20,15 +20,31 @@ local servers = {
   "clangd",
   "gopls",
   "volar",
-  "vuels",
   "svelte",
   "tailwindcss",
   "kotlin_language_server",
-  "powershell_es",
   "lemminx"
 }
 
-lsp_installer.setup()
+local settings = {
+  ensure_installed = servers,
+  ui = {
+    icons = {},
+    keymaps = {
+      toggle_server_expand = "<CR>",
+      install_server = "i",
+      update_server = "u",
+      check_server_version = "c",
+      update_all_servers = "U",
+      check_outdated_servers = "C",
+      uninstall_server = "X",
+    },
+  },
+
+  log_level = vim.log.levels.INFO,
+}
+
+lsp_installer.setup(settings)
 
 local lspconfig_status_ok, lspconfig = pcall(require, "lspconfig")
 if not lspconfig_status_ok then
@@ -71,8 +87,9 @@ for _, server in pairs(servers) do
     opts = vim.tbl_deep_extend("force", powershell_opts, opts)
   end
   -- if server == "jdtls" then
-  --   opts = vim.tbl_deep_extend("force", jdtls_opts, opts)
   --   local jdtls_opts = require "user.lsp.settings.java_config"
+  --   require("user.log.log").println(vim.inspect(jdtls_opts))
+  --   opts = vim.tbl_deep_extend("force", jdtls_opts, opts)
   -- end
 
   lspconfig[server].setup(opts)

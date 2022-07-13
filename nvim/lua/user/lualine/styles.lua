@@ -65,7 +65,7 @@ styles.default = {
   extensions = {},
 }
 
-styles.user= {
+styles.user = {
   style = "user",
   options = {
     theme = "auto",
@@ -114,8 +114,6 @@ styles.user= {
 function M.get_style(style)
   local style_keys = vim.tbl_keys(styles)
   if not vim.tbl_contains(style_keys, style) then
-    local Log = require("user.log.log") 
-    Log.println('"user" style is applied.')
     style = "user"
   end
 

@@ -64,6 +64,7 @@ return packer.startup(function(use)
   use "nvim-lua/plenary.nvim"
   use "nvim-treesitter/nvim-treesitter"
   use "nvim-lua/popup.nvim"
+  use "lewis6991/impatient.nvim"
   -- All the things
   use "williamboman/nvim-lsp-installer"
   use "neovim/nvim-lspconfig"
@@ -125,7 +126,7 @@ return packer.startup(function(use)
   -- snippets
   use "rafamadriz/friendly-snippets" -- a bunch of snippets to use
   use "L3MON4D3/LuaSnip"
-  -- use "ThePrimeagen/harpoon"
+  use "ThePrimeagen/harpoon"
 
   -- DAP
   use "mfussenegger/nvim-dap"
@@ -143,4 +144,10 @@ return packer.startup(function(use)
   use "mattn/webapi-vim"
   use "tpope/vim-fugitive"
   use "ThePrimeagen/git-worktree.nvim"
+  
+  use "wakatime/vim-wakatime"
+  use "j-hui/fidget.nvim"
+  use "RRethy/vim-illuminate"
+  use "stevearc/dressing.nvim"
+  use "rcarriga/nvim-notify"
 end)
