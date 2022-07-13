@@ -1,9 +1,12 @@
-
 local M = {}
 
 local localshell = "fish"
 if os.getenv("OS") == "Windows_NT" then
   localshell = "pwsh"
+else
+  if vim.fn.empty(vim.fn.glob("/usr/bin/fish")) > 0 then
+    localshell = "/bin/sh"
+  end
 end
 
 M.config = function()
@@ -91,7 +94,7 @@ end
 M._exec_toggle = function(opts)
   local Terminal = require("toggleterm.terminal").Terminal
   local term = Terminal:new { cmd = opts.cmd, count = opts.count, direction = opts.direction }
-  term:toggle(20 , opts.direction)
+  term:toggle(20, opts.direction)
 end
 
 

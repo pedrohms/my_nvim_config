@@ -67,7 +67,10 @@ vim.api.nvim_create_autocmd({ "CmdWinEnter" }, {
 local status_winbar, winbar = pcall(require, "user.winbar")
 if status_winbar then
   vim.api.nvim_create_autocmd({ "CursorMoved", "BufWinEnter", "BufFilePost", "InsertEnter", "BufWritePost" }, {
-    callback = function()
+    callback = function(bf)
+      if string.match(bf.file, ".md") then
+        return
+      end
       winbar.get_winbar()
     end,
   })
