@@ -23,7 +23,9 @@ local servers = {
   "svelte",
   "tailwindcss",
   "kotlin_language_server",
-  "lemminx"
+  "lemminx",
+  "astro",
+  "dockerls"
 }
 
 local settings = {
