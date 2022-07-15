@@ -62,6 +62,20 @@ for _, server in pairs(servers) do
     capabilities = require("user.lsp.handlers").capabilities,
   }
 
+  if server == "eslint" then
+    local eslint_opts = {
+      handlers = {
+        ["eslint/probeFailed"] = function()
+          return {}
+        end,
+        ["eslint/noLibrary"] = function()
+          return {}
+        end,
+      }
+    }
+    opts = vim.tbl_deep_extend("force", eslint_opts, opts)
+  end
+
   if server == "sumneko_lua" then
     local sumneko_opts = require "user.lsp.settings.sumneko_lua"
     opts = vim.tbl_deep_extend("force", sumneko_opts, opts)
