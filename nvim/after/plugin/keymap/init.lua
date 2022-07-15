@@ -33,8 +33,7 @@ if close_ok then
   keymap.nnoremap("<leader>bo", function() require('close_buffers').delete({ type = 'hidden', force = true }) end)
   keymap.nnoremap("<leader>ba", function() require('close_buffers').wipe({ type = 'all', force = true }) end)
 end
-keymap.nnoremap("<leader>bc", "<cmd>Bdelete!<CR>")
-keymap.nnoremap("<leader>bb", function() require("telescope.builtin").buffers(nopreview) end)
+keymap.nnoremap("<leader>bb", "<cmd>Bdelete!<CR>")
 
 
 -- Telescope
@@ -45,6 +44,7 @@ keymap.nnoremap("<leader>sg", "<cmd>Telescope live_grep<CR>")
 keymap.nnoremap("<leader>sk", "<cmd>Telescope keymaps<CR>")
 keymap.nnoremap("<leader>sc", "<cmd>Telescope commands<CR>")
 keymap.nnoremap("<leader>sr", "<cmd>Telescope oldfiles<CR>")
+keymap.nnoremap("<leader>sb", function() require("telescope.builtin").buffers(nopreview) end)
 
 keymap.nnoremap("<leader>e", ":NvimTreeToggle<CR>")
 
