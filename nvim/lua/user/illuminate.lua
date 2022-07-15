@@ -9,3 +9,4 @@ vim.api.nvim_set_keymap(
   '<cmd>lua require"illuminate".next_reference{reverse=true,wrap=true}<cr>',
   { noremap = true }
 )
+vim.cmd [[ hi illuminatedWord guibg=#2c313c ]]

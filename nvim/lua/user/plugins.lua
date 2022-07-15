@@ -150,4 +150,5 @@ return packer.startup(function(use)
   use "RRethy/vim-illuminate"
   use "stevearc/dressing.nvim"
   use "rcarriga/nvim-notify"
+  use "kazhala/close-buffers.nvim"
 end)

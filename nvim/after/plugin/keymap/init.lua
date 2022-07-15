@@ -17,18 +17,25 @@ keymap.nnoremap("<C-Left>", ":vertical resize -2<CR>")
 keymap.nnoremap("<C-Right>", ":vertical resize +2<CR>")
 
 keymap.inoremap("jk", "<Esc>")
-keymap.nnoremap("<A-j>", "<Esc>:m .+1<CR>==$")
-keymap.nnoremap("<A-k>", "<Esc>:m .-2<CR>==$")
-keymap.vnoremap("<A-j>", ":m .+1<CR>==")
-keymap.vnoremap("<A-k>", ":m .-2<CR>==")
+keymap.inoremap("<A-j>", "<Esc>:m .+1<CR>==$A")
+keymap.inoremap("<A-k>", "<Esc>:m .-2<CR>==$A")
+-- keymap.nnoremap("<A-k>", ":m .-2<CR>==")
+-- keymap.nnoremap("<A-j>", ":m .+1<CR>==")
+keymap.xnoremap("<A-j>", ":move '>+1<CR>gv-gv")
+keymap.xnoremap("<A-k>", ":move '<-2<CR>gv-gv")
 keymap.vnoremap("<", "<gv")
 keymap.vnoremap(">", ">gv")
 
 keymap.nnoremap("<S-l>", ":bnext<CR>")
 keymap.nnoremap("<S-h>", ":bprevious<CR>")
-keymap.nnoremap("<leader>c", "<cmd>Bdelete!<CR>")
+local close_ok, close_buffers = pcall(require, "close_buffers")
+if close_ok then
+  keymap.nnoremap("<leader>bo", function() require('close_buffers').delete({ type = 'hidden', force = true }) end)
+  keymap.nnoremap("<leader>ba", function() require('close_buffers').wipe({ type = 'all', force = true }) end)
+end
+keymap.nnoremap("<leader>bc", "<cmd>Bdelete!<CR>")
+keymap.nnoremap("<leader>bb", function() require("telescope.builtin").buffers(nopreview) end)
 
-keymap.nnoremap("<leader>b", function() require("telescope.builtin").buffers(nopreview) end)
 
 -- Telescope
 keymap.nnoremap("<leader>sh", "<cmd>nohlsearch<cr>")
